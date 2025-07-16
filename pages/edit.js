@@ -146,6 +146,33 @@ const Edit = () => {
     });
   };
 
+  // Add these handlers above the return statement
+  const editSkill = (skillIndex, editSkill) => {
+    let copySkills = data["Skills & tools"];
+    copySkills[skillIndex] = { ...editSkill };
+    setData({ ...data, ["Skills & tools"]: copySkills });
+  };
+
+  const addSkill = () => {
+    setData({
+      ...data,
+      ["Skills & tools"]: [
+        ...data["Skills & tools"],
+        {
+          id: uuidv4(),
+          title: "New Skill/Tool",
+          description: "Description",
+        },
+      ],
+    });
+  };
+
+  const deleteSkill = (id) => {
+    let copySkills = data["Skills & tools"];
+    copySkills = copySkills.filter((skill) => skill.id !== id);
+    setData({ ...data, ["Skills & tools"]: copySkills });
+  };
+
   return (
     <div className={`container mx-auto ${data.showCursor && "cursor-none"}`}>
       <Header isBlog></Header>
@@ -175,10 +202,10 @@ const Edit = () => {
               Projects
             </Button>
             <Button
-              onClick={() => setCurrentTabs("SERVICES")}
-              type={currentTabs === "SERVICES" && "primary"}
+              onClick={() => setCurrentTabs("SKILLS_AND_TOOLS")}
+              type={currentTabs === "SKILLS_AND_TOOLS" && "primary"}
             >
-              Services
+              Skills & tools
             </Button>
             <Button
               onClick={() => setCurrentTabs("ABOUT")}
@@ -430,57 +457,45 @@ const Edit = () => {
             </div>
           </>
         )}
-        {/* SERVICES */}
-        {currentTabs === "SERVICES" && (
+        {/* SKILLS & TOOLS */}
+        {currentTabs === "SKILLS_AND_TOOLS" && (
           <>
             <div className="mt-10">
-              {data.services.map((service, index) => (
-                <div key={service.id}>
+              {data["Skills & tools"].map((item, index) => (
+                <div key={item.id}>
                   <div className="flex items-center justify-between">
-                    <h1 className="text-2xl">{service.title}</h1>
-                    <Button
-                      onClick={() => deleteService(service.id)}
-                      type="primary"
-                    >
+                    <h1 className="text-2xl">{item.title}</h1>
+                    <Button onClick={() => deleteSkill(item.id)} type="primary">
                       Delete
                     </Button>
                   </div>
                   <div className="flex items-center mt-5">
                     <label className="w-1/5 text-lg opacity-50">Title</label>
                     <input
-                      value={service.title}
-                      onChange={(e) =>
-                        editServices(index, {
-                          ...service,
-                          title: e.target.value,
-                        })
-                      }
                       className="w-4/5 ml-10 p-2 rounded-md shadow-lg border-2"
-                      type="text"
-                    ></input>
+                      value={item.title}
+                      onChange={(e) =>
+                        editSkill(index, { ...item, title: e.target.value })
+                      }
+                    />
                   </div>
                   <div className="flex items-center mt-5">
-                    <label className="w-1/5 text-lg opacity-50">
-                      Description
-                    </label>
+                    <label className="w-1/5 text-lg opacity-50">Description</label>
                     <textarea
-                      value={service.description}
-                      onChange={(e) =>
-                        editServices(index, {
-                          ...service,
-                          description: e.target.value,
-                        })
-                      }
                       className="w-4/5 ml-10 p-2 rounded-md shadow-lg border-2"
-                    ></textarea>
+                      value={item.description}
+                      onChange={(e) =>
+                        editSkill(index, { ...item, description: e.target.value })
+                      }
+                    />
                   </div>
-                  <hr className="my-10"></hr>
+                  <hr className="my-10" />
                 </div>
               ))}
             </div>
             <div className="my-10">
-              <Button onClick={addService} type="primary">
-                Add Service +
+              <Button onClick={addSkill} type="primary">
+                Add Skill/Tool +
               </Button>
             </div>
           </>
